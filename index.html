@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Project 1 - sample code 2</title>
-	<script src="https://d3js.org/d3.v3.min.js"></script>
+	<title>Project 1 - sample code</title>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
 	<style>
     	text { 
 			font-family: Arial; 
@@ -27,45 +27,64 @@
 
 	<svg id="main" width="600" height="600">
 		<text id='label' x='20' y='20'>Energy prodcution for the US</text>
-		<g transform="translate(30,40)"></g>
+		<g transform="translate(20,40)">
+		
+
+		</g>
 	</svg>
 
 	
 	<script>
 
-		var CHART_WIDTH = 400;
-		var CHART_HEIGHT = 130;
-
+		var BAR_WIDTH = 10;
 		var MAX_BAR_HEIGHT = 100;
 
-		var energyProduction = [];
+		var energyProduction = [ ];
 
-		function drawLineChart() 
+		function drawBarChart() 
 		{
-			var maxValue=d3.max(energyProduction),xScale=d3.scale.linear(),yScale=d3.scale.linear();xScale.domain([1980,2012]).range([0,CHART_WIDTH]),yScale.domain([0,100]).range([CHART_HEIGHT,0]);var pathGenerator=d3.svg.line().x(function(e){return xScale(e.year)}).y(function(e){return yScale(e.production)}),g=d3.select("svg").select("g"),xAxis=d3.svg.axis().scale(xScale).orient("bottom").tickFormat(function(e){return""+e}),yAxis=d3.svg.axis().scale(yScale).orient("left");g.append("g").attr("class","axis").attr("transform","translate(0,"+CHART_HEIGHT+")").call(xAxis),g.append("g").attr("class","axis").call(yAxis),g.append("path").style("fill","none").style("stroke","steelblue").style("stroke-width","3px").attr("d",pathGenerator(energyProduction));
+			
 
+			var maxValue = d3.max(energyProduction);
+
+
+			var selection = d3.select('svg').select('g').selectAll('rect').data(energyProduction);
+
+			var rectangles = selection.enter().append('rect');
+			
+			rectangles.attr('width', BAR_WIDTH)
+			
+			rectangles.attr('x', function(d, i) {
+				return i * BAR_WIDTH;
+			})
+			
+			rectangles.attr('height', function(d) 
+			{
+				var n = d / maxValue;
+				return n * MAX_BAR_HEIGHT;
+			});
+
+			rectangles.attr('y', function(d) 
+			{
+				var n = 1 - (d / maxValue);
+				return n * MAX_BAR_HEIGHT;
+
+			});
 		}
 			
 
 		d3.csv('energy_us.csv', function(data) 
 		{
-			for (var i=0; i<data.length; i++)
-			{
-				var record = data[i];
-				
-				// loop through all years, from 1980 to 2012
-				for (var y=1980; y<=2012; y++) 
-				{
-					var value = record[y];
-					var object = {
-						year: y,
-						production: +value
-					};
+			var record = data[0];
 
-					energyProduction.push(object);
-				}
+			// loop through all years, from 1980 to 2012
+			for (var year=1980; year<=2012; year++) 
+			{
+				var value = record[year];	
+				energyProduction.push(+value);
 			}
-			drawLineChart();
+
+			drawBarChart();
 
 		});
 		
