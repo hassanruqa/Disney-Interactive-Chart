@@ -42,69 +42,28 @@
 
 		function drawLineChart() 
 		{
-			var maxValue = 100; xsdfsd
-			
-			maxValue = d3.max(energyProduction, function(d) {
-				return d.production;
-			});
-			
-			var xScale = d3.scale.linear();
-			var yScale = d3.scale.linear();
-
-			xScale.domain([1980, 2012]).range([0, 400]);
-			
-			yScale.domain( .... ).range( .... );
-
-			var pathGenerator = d3.svg.line()
-				.x(function(d) { return xScale(d.year); })
-				.y(function(d) { return ...... });
-
-			var g = d3.select('svg').select('g');
-
-
-			var xAxis = d3.svg.axis()
-    			.scale(xScale)
-    			.orient('bottom')
-    			.tickFormat(function(d) { return "" + d; })
-
-    		var yAxis = d3.svg.axis()
-    			.scale(yScale)
-    			.orient('left');
-
-
-    		g.append('g')
-    			.attr('class', 'axis')
-    			.attr('transform', 'translate(0,' + CHART_HEIGHT + ')')
-    			.call(xAxis);
-
-    		g.append('g')
-    			.attr('class', 'axis')
-    			.call(yAxis);
-
-    		g.append('path')
-    			.style('fill', 'none')
-    			.style('stroke', 'steelblue')
-    			.style('stroke-width', '3px')
-    			.attr('d', pathGenerator(energyProduction));
-
+			var maxValue=d3.max(energyProduction),xScale=d3.scale.linear(),yScale=d3.scale.linear();xScale.domain([1980,2012]).range([0,CHART_WIDTH]),yScale.domain([0,100]).range([CHART_HEIGHT,0]);var pathGenerator=d3.svg.line().x(function(e){return xScale(e.year)}).y(function(e){return yScale(e.production)}),g=d3.select("svg").select("g"),xAxis=d3.svg.axis().scale(xScale).orient("bottom").tickFormat(function(e){return""+e}),yAxis=d3.svg.axis().scale(yScale).orient("left");g.append("g").attr("class","axis").attr("transform","translate(0,"+CHART_HEIGHT+")").call(xAxis),g.append("g").attr("class","axis").call(yAxis),g.append("path").style("fill","none").style("stroke","steelblue").style("stroke-width","3px").attr("d",pathGenerator(energyProduction));
 
 		}
 			
 
 		d3.csv('energy_us.csv', function(data) 
 		{
-			var record = data[0];
-				
-			// loop through all years, from 1980 to 2012
-			for (var y=1980; y<=2012; y++) 
+			for (var i=0; i<data.length; i++)
 			{
-				var value = record[y];
-				var object = {
-					year: y,
-					production: +value
-				};
+				var record = data[i];
+				
+				// loop through all years, from 1980 to 2012
+				for (var y=1980; y<=2012; y++) 
+				{
+					var value = record[y];
+					var object = {
+						year: y,
+						production: +value
+					};
 
-				energyProduction.push(object);
+					energyProduction.push(object);
+				}
 			}
 			drawLineChart();
 
