@@ -1,4 +1,4 @@
-<script>
+
     console.log("✅ script.js loaded successfully!");
 
     d3.csv("data/disney.csv", function(data)
@@ -16,7 +16,7 @@
 
 
     
-    </script>
+
 
 
 
