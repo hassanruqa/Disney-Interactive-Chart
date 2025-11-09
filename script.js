@@ -6,9 +6,14 @@ d3.csv("data/disney.csv", function(data)
     });
     
 
+
+var maxYear = d3.max(filtered_data, funtion(d){ return +d.release_year; });
+
+
 var yearRanges = [];
-for (var start = 1970; start <= 2020; start += 5){
-    yearRanges.push({start: start, end: start + 4});
+for (var start = 1970; start <= maxYear; start += 5){
+    var end = Math.min(start+4, maxYear);
+    yearRanges.push({start: start, end: end});
 } // end of for loop
 
 var ratings = ["TV-Y", "TV-Y7", "TV-Y7-FV", "TV-G", "TV-PG", "TV-14"];
@@ -37,6 +42,7 @@ var allYearsData = yearRanges.map(function(range){
    console.log(allYearsData);
 
 }); // end of dc.csv
+
 
 
 
