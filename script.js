@@ -7,8 +7,8 @@ d3.csv("data/disney.csv", function(data)
     
 
 var yearRanges = [];
-for (var start = 1970; var end <= 2020; start += 5){
-    years.push({start: start, end: start + 4});
+for (var start = 1970; start <= 2020; start += 5){
+    yearRanges.push({start: start, end: start + 4});
 } // end of for loop
 
 var ratings = ["TV-Y", "TV-Y7", "TV-Y7-FV", "TV-G", "TV-PG", "TV-14"];
@@ -37,6 +37,7 @@ var allYearsData = yearRanges.map(function(range){
    console.log(allYearsData);
 
 }); // end of dc.csv
+
 
 
 
