@@ -1,13 +1,12 @@
 
 d3.csv("data/disney.csv", function(data)
-{
+       {
     var filtered_data = data.filter(function(d) { 
         return d.type === "TV Show" && d.rating.startsWith("TV");
     });
     
 
-
-var maxYear = d3.max(filtered_data, funtion(d){ return +d.release_year; });
+var maxYear = d3.max(filtered_data, function(d){ return +d.release_year; });
 
 
 var yearRanges = [];
@@ -42,6 +41,7 @@ var allYearsData = yearRanges.map(function(range){
    console.log(allYearsData);
 
 }); // end of dc.csv
+
 
 
 
