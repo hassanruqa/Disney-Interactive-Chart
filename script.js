@@ -1,7 +1,7 @@
 d3.csv("data/disney.csv", function(data)
        {
     var filtered_data = data.filter(function(d) { 
-        return d.type === "TV Show" && d.rating.startsWith("TV");
+        return d.type === "TV Show" && d.rating.trim().toUpperCase().startsWith("TV");
     }); // end of filtered_data
     
 
@@ -114,6 +114,7 @@ drawBarChart(allYearsData[0].counts);
 
 
 }); // end of dc.csv
+
 
 
 
