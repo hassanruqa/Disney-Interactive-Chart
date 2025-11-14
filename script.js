@@ -1,106 +1,100 @@
 d3.csv("data/disney.csv", function(data) {
+    var filtered_data = data.filter(function(d) { 
+        return d.type === "TV Show" && d.rating.trim().toUpperCase().startsWith("TV"); 
+    }); // end of filtered_data
 
-  // Filter TV Shows with valid ratings
-  var filtered_data = data.filter(function(d) {
-    return d.type === "TV Show" && d.rating && d.rating.trim().toUpperCase().startsWith("TV");
-  });
+    var maxYear = d3.max(filtered_data, function(d){ return +d.release_year; });
 
-  // Get max year in the dataset
-  var maxYear = d3.max(filtered_data, function(d){ return +d.release_year; });
+    var yearRanges = [];
+    for (var start = 1970; start <= maxYear; start += 5){
+        var end = Math.min(start+4, maxYear);
+        yearRanges.push({start: start, end: end});
+    } // end of for loop
 
-  // Create 5-year ranges
-  var yearRanges = [];
-  for (var start = 1970; start <= maxYear; start += 5) {
-    var end = Math.min(start + 4, maxYear);
-    yearRanges.push({start: start, end: end});
-  }
+    var ratings = ["TV-Y", "TV-Y7", "TV-Y7-FV", "TV-G", "TV-PG", "TV-14"];
 
-  // Ratings to display
-  var ratings = ["TV-Y", "TV-Y7", "TV-Y7-FV", "TV-G", "TV-PG", "TV-14"];
+    var allYearsData = yearRanges.map(function(range){
+        var rangeData = filtered_data.filter(function(d){
+            var year = +d.release_year;
+            return year >= range.start && year <= range.end;
+        }); // end of yearData
 
-  // Aggregate counts for each 5-year range
-  var allYearsData = yearRanges.map(function(range) {
-    var rangeData = filtered_data.filter(function(d) {
-      var year = +d.release_year;
-      return year >= range.start && year <= range.end;
-    });
+        var ratingCounts = ratings.map(function(rating) {
+            var count = rangeData.filter(function(d){ return d.rating === rating; }).length;
+            return {rating: rating, counts: count};
+        }); // end of rating counts
 
-    var ratingCounts = ratings.map(function(rating) {
-      var count = rangeData.filter(function(d) {
-        return d.rating && d.rating.trim().toUpperCase() === rating;
-      }).length;
-      return {rating: rating, counts: count};
-    });
+        return {range: range.start + "-" + range.end, counts: ratingCounts};
+    }); // end of allYearsData
 
-    return {range: range.start + "-" + range.end, counts: ratingCounts};
-  });
+    var initialData = allYearsData[0].counts;
 
-  // Dimensions
-  var margin = {top: 40, right: 20, bottom: 50, left: 50};
-  var width = 700 - margin.left - margin.right;
-  var height = 400 - margin.top - margin.bottom;
+    var margin = {top: 40, right: 20, bottom: 50, left: 50};
+    var width = 700 - margin.left - margin.right;
+    var height = 400 - margin.top - margin.bottom;
 
-  // Initial data for first range
-  var initialData = allYearsData[0].counts;
+    // Scales
+    var xScale = d3.scale.ordinal()
+        .domain(initialData.map(function(d){ return d.rating; }))
+        .rangeRoundBands([0, width], 0.1);
 
-  // Scales
-  var xScale = d3.scale.ordinal()
-      .domain(initialData.map(function(d){ return d.rating; }))
-      .rangeRoundBands([0, width], 0.1);
+    var yScale = d3.scale.linear()
+        .domain([0, d3.max(initialData, function(d){ return d.counts; })])
+        .range([height, 0]);
 
-  var yScale = d3.scale.linear()
-      .domain([0, d3.max(initialData, function(d){ return d.counts; })])
-      .range([height, 0]);
+    // SVG
+    var svg = d3.select("#main")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-  // SVG container
-  var svg = d3.select("#main")
-      .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom)
-    .append("g")
-      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    function drawBarChart(data) {
+        yScale.domain([0, d3.max(data, function(d){return d.counts; })]);
+        svg.select(".y.axis")
+            .call(yAxis);
 
-  // Axes
-  var xAxis = d3.svg.axis().scale(xScale).orient("bottom");
-  var yAxis = d3.svg.axis().scale(yScale).orient("left").ticks(5);
+        var bars = svg.selectAll(".bar")
+            .data(data);
 
-  svg.append("g")
-      .attr("class", "x axis")
-      .attr("transform", "translate(0," + height + ")")
-      .call(xAxis);
+        bars.attr("x", function(d){ return xScale(d.rating); })
+            .attr("y", function(d){ return yScale(d.counts); })
+            .attr("height", function(d){ return height - yScale(d.counts); })
+            .attr("width", xScale.rangeBand());
 
-  svg.append("g")
-      .attr("class", "y axis")
-      .call(yAxis);
+        bars.enter()
+            .append("rect")
+            .attr("class", "bar")
+            .attr("fill", "#69b3a2")
+            .attr("x", function(d){ return xScale(d.rating); })
+            .attr("y", function(d){ return yScale(d.counts); })
+            .attr("height", function(d){ return height - yScale(d.counts); })
+            .attr("width", xScale.rangeBand());
 
-  // Draw bars function
-  function drawBarChart(data) {
-    // Update yScale domain
-    yScale.domain([0, d3.max(data, function(d){ return d.counts; })]);
-    svg.select(".y.axis").call(yAxis);
+        bars.exit().remove();
+    }
 
-    // Bind data
-    var bars = svg.selectAll(".bar").data(data);
+    // Axes
+    var xAxis = d3.svg.axis()
+        .scale(xScale)
+        .orient("bottom");
 
-    // Update existing bars
-    bars.attr("x", function(d){ return xScale(d.rating); })
-        .attr("y", function(d){ return yScale(d.counts); })
-        .attr("height", function(d){ return height - yScale(d.counts); })
-        .attr("width", xScale.rangeBand());
+    var yAxis = d3.svg.axis()
+        .scale(yScale)
+        .orient("left")
+        .ticks(5);
 
-    // Enter new bars
-    bars.enter().append("rect")
-        .attr("class", "bar")
-        .attr("fill", "#69b3a2")
-        .attr("x", function(d){ return xScale(d.rating); })
-        .attr("y", function(d){ return yScale(d.counts); })
-        .attr("height", function(d){ return height - yScale(d.counts); })
-        .attr("width", xScale.rangeBand());
+    // Draw axes
+    svg.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(xAxis);
 
-    // Remove old bars
-    bars.exit().remove();
-  }
+    svg.append("g")
+        .attr("class", "y axis")
+        .call(yAxis);
 
-  // Draw initial chart
-  drawBarChart(initialData);
+    drawBarChart(allYearsData[0].counts);
 
-});
+  console.log(allYearsData);
+}); // end of dc.csv
