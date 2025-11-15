@@ -31,11 +31,11 @@ d3.csv("data/disney.csv", function(data) {
     var slider = d3.select("#yearSlider")
                 .attr("max", allYearsData.length);
 
-    var label = d3.select("#yearLabel")
+    var yearlabel = d3.select("#yearLabel")
                 .text(allYearsData[0].range);
 
     slider.on("input", function(){
-            var index = this.value;
+            var index = +this.value;
             drawBarChart(allYearsData[index].counts);
             yearLabel.text(allYearsData[index].range);
             }); // end of slider function
@@ -111,5 +111,6 @@ d3.csv("data/disney.csv", function(data) {
 
   console.log(allYearsData);
 }); // end of dc.csv
+
 
 
