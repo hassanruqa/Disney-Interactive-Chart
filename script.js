@@ -19,26 +19,26 @@ d3.csv("data/disney.csv", function(data) {
             return year >= range.start && year <= range.end;
         }); // end of yearData
 
-        // setting up slider
-        var slider = d3.select("#yearSlider")
-                    .attr("max", allYearsData.length);
-
-        var label = d3.select("#yearLabel")
-                    .text(allYearsData[0].range);
-
-        slider.on("input", function(){
-                var index = this.value;
-                drawBarChart(allYearsData[index].counts);
-                yearLabel.text(allYearsData[index].range);
-                }); // end of slider function
-
-        var ratingCounts = ratings.map(function(rating) {
+             var ratingCounts = ratings.map(function(rating) {
             var count = rangeData.filter(function(d){ return d.rating === rating; }).length;
             return {rating: rating, counts: count};
         }); // end of rating counts
 
         return {range: range.start + "-" + range.end, counts: ratingCounts};
     }); // end of allYearsData
+
+   // setting up slider
+    var slider = d3.select("#yearSlider")
+                .attr("max", allYearsData.length);
+
+    var label = d3.select("#yearLabel")
+                .text(allYearsData[0].range);
+
+    slider.on("input", function(){
+            var index = this.value;
+            drawBarChart(allYearsData[index].counts);
+            yearLabel.text(allYearsData[index].range);
+            }); // end of slider function
 
     var initialData = allYearsData[0].counts;
 
@@ -111,4 +111,5 @@ d3.csv("data/disney.csv", function(data) {
 
   console.log(allYearsData);
 }); // end of dc.csv
+
 
