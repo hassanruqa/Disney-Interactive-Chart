@@ -31,7 +31,7 @@ d3.csv("data/disney.csv", function(data) {
     var slider = d3.select("#yearSlider")
                 .attr("max", allYearsData.length-1);
 
-    var yearlabel = d3.select("#yearLabel")
+    var yearLabel = d3.select("#yearLabel")
                 .text(allYearsData[0].range);
 
     slider.on("input", function(){
@@ -109,8 +109,8 @@ d3.csv("data/disney.csv", function(data) {
 
     drawBarChart(allYearsData[0].counts);
 
-  console.log(allYearsData);
 }); // end of dc.csv
+
 
 
 
