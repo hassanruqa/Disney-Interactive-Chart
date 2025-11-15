@@ -29,7 +29,7 @@ d3.csv("data/disney.csv", function(data) {
 
    // setting up slider
     var slider = d3.select("#yearSlider")
-                .attr("max", allYearsData.length);
+                .attr("max", allYearsData.length-1);
 
     var yearlabel = d3.select("#yearLabel")
                 .text(allYearsData[0].range);
@@ -111,6 +111,7 @@ d3.csv("data/disney.csv", function(data) {
 
   console.log(allYearsData);
 }); // end of dc.csv
+
 
 
 
