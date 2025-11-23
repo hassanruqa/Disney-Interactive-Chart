@@ -28,7 +28,8 @@ d3.csv("data/disney.csv", function(data) {
     }); // end of allYearsData
 
 var tooltip = d3.select("#tooltip")
-    .attr("class", "tooltip");
+    .attr("class", "tooltip")
+    .style("opacity", 0);
 
     // setting up tooltip
 var viewTooltip = function(d) {
@@ -134,6 +135,7 @@ var hideTooltip = function(d) {
     drawBarChart(allYearsData[0].counts);
 
 }); // end of dc.csv
+
 
 
 
