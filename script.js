@@ -27,13 +27,8 @@ d3.csv("data/disney.csv", function(data) {
         return {range: range.start + "-" + range.end, counts: ratingCounts};
     }); // end of allYearsData
 
-    var tooltip = d3.select("#tooltip")
-                .style("opacity", 0)
-                .attr("class", "tooltip")
-                .style("background-color", "black")
-                .style("color", "white")
-                .style("border-radius", "5px")
-                .style("padding", "20px");
+var tooltip = d3.select("#tooltip")
+    .attr("class", "tooltip");
 
     // setting up tooltip
 var viewTooltip = function(d) {
@@ -139,6 +134,7 @@ var hideTooltip = function(d) {
     drawBarChart(allYearsData[0].counts);
 
 }); // end of dc.csv
+
 
 
 
