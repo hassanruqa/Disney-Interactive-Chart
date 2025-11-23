@@ -36,21 +36,22 @@ d3.csv("data/disney.csv", function(data) {
                 .style("padding", "20px");
 
     // setting up tooltip
-    var viewTooltip = function(d) {
-        tooltip.transition().duration(100).style("opacity", 1)
-        tooltip.html("Title Count: " + d.counts).style("left", (d3.mouse(this)[0] + 20) + "px")
-        .style("top", (d3.mouse(this)[1]) + "px")
-    }
-    
-    var moveTooltip = function(d) {
-    tooltip.style("left", (d3.mouse(this)[0]+20) + "px")
-    .style("top", (d3.mouse(this)[1]) + "px");
-  }
+var viewTooltip = function(d) {
+    tooltip.transition().duration(100).style("opacity", 1);
 
-  var hideTooltip = function(d) {
-    tooltip.transition().duration(100)
-      .style("opacity", 0);
-  }
+    tooltip.html("Title Count: " + d.counts)
+        .style("left", (d3.event.pageX + 20) + "px")
+        .style("top", (d3.event.pageY - 20) + "px");
+}
+
+var moveTooltip = function(d) {
+    tooltip.style("left", (d3.event.pageX + 20) + "px")
+           .style("top", (d3.event.pageY - 20) + "px");
+}
+
+var hideTooltip = function(d) {
+    tooltip.transition().duration(100).style("opacity", 0);
+}
     
    // setting up slider
     var slider = d3.select("#yearSlider")
@@ -138,6 +139,7 @@ d3.csv("data/disney.csv", function(data) {
     drawBarChart(allYearsData[0].counts);
 
 }); // end of dc.csv
+
 
 
 
