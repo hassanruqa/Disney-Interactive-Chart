@@ -65,8 +65,8 @@ var hideTooltip = function(d) {
     var initialData = allYearsData[0].counts;
 
     var margin = {top: 40, right: 20, bottom: 50, left: 50};
-    var width = 700 - margin.left - margin.right;
-    var height = 400 - margin.top - margin.bottom;
+    var width = 900;
+    var height = 800;
 
     // Scales
     var xScale = d3.scale.ordinal()
@@ -150,6 +150,7 @@ var hideTooltip = function(d) {
     drawBarChart(allYearsData[0].counts);
 
 }); // end of dc.csv
+
 
 
 
