@@ -136,7 +136,7 @@ var hideTooltip = function(d) {
     // --- Legend --- //
     var legend = svg.append("g")
                     .attr("class", "legend")
-                    .attr("transform", "translate(" + (width + 20) + ",0)");
+                    .attr("transform", "translate(" + (width + 10) + ",0)");
 
     var leg_items = legend.selectAll(".legend-item")
                           .data(ratings)
@@ -195,6 +195,7 @@ var hideTooltip = function(d) {
     drawBarChart(allYearsData[0].counts);
 
 }); // end of dc.csv
+
 
 
 
