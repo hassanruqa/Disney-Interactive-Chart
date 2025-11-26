@@ -165,10 +165,9 @@ d3.csv("data/disney.csv", function(data) {
         .attr("y", -10)
         .attr("width", 200)
         .attr("height", ratings.length * 25 + 10)
-        .attr("fill", "white")
+        .attr("fill", "none")
         .attr("stroke", "gray")
-        .attr("stroke-width", 1)
-        .lower();
+        .attr("stroke-width", 1);
 
             
     leg_items.append("rect")
@@ -182,5 +181,6 @@ d3.csv("data/disney.csv", function(data) {
         .text(function(d){ return d; })
         .style("font-size", "12px");
 });
+
 
 
