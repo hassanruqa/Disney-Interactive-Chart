@@ -3,22 +3,27 @@ d3.csv("data/disney.csv", function(data) {
         return d.type === "TV Show" && d.rating.trim().toUpperCase().startsWith("TV"); 
     }); // end of filtered_data
 
-    var maxYear = d3.max(filtered_data, function(d){ return +d.release_year; });
 
+    // --- years --- //
+    var maxYear = d3.max(filtered_data, function(d){ return +d.release_year; });
     var yearRanges = [];
     for (var start = 1970; start <= maxYear; start += 5){
         var end = Math.min(start+4, maxYear);
         yearRanges.push({start: start, end: end});
     } // end of for loop
 
+
+    // --- ratings --- //
     var ratings = ["TV-Y", "TV-Y7", "TV-Y7-FV", "TV-G", "TV-PG", "TV-14"];
 
+    // --- year ranges --- //
     var allYearsData = yearRanges.map(function(range){
         var rangeData = filtered_data.filter(function(d){
             var year = +d.release_year;
             return year >= range.start && year <= range.end;
         }); // end of yearData
 
+        // --- counts --- //
              var ratingCounts = ratings.map(function(rating) {
             var count = rangeData.filter(function(d){ return d.rating === rating; }).length;
             return {rating: rating, counts: count};
@@ -28,13 +33,13 @@ d3.csv("data/disney.csv", function(data) {
     }); // end of allYearsData
 
 
-    
+       
+    // --- setting up tooltip --- //
 var tooltip = d3.select("#tooltip")
     .attr("class", "tooltip")
     .style("opacity", 0);
 
     
-    // --- setting up tooltip --- //
 var viewTooltip = function(d) {
     tooltip.transition().duration(100).style("opacity", 1);
 
@@ -52,8 +57,7 @@ var hideTooltip = function(d) {
     tooltip.transition().duration(100).style("opacity", 0);
 }
 
-
-
+    
     // --- choosing colors --- //
     var color = d3.scale.category10();
     
@@ -71,7 +75,7 @@ var hideTooltip = function(d) {
             }); // end of slider function
 
 
-    
+    // --- set up data --- //
     var initialData = allYearsData[0].counts;
 
 // ---  margins --- //    
@@ -129,6 +133,28 @@ var hideTooltip = function(d) {
     }
 
 
+    // --- Legend --- //
+    var legend = svg.append("g")
+                    .attr("class", "legend")
+                    .attr("transform", "translate(" + (width+40) +",)");
+
+    var leg_items = legend.selectAll(".legend-item")
+                          .data(ratings)
+                          .enter()
+                          .append("g")
+                          .attr("class", "legend-item")
+                          .atttr("transform", function(d, i) {return "translate(" + (i+25) + ",)";});
+
+    leg_items.append("rect")
+            .attr("width", 18)
+            .attr("height", 18)
+            .attr("fill", function(d) { return color(d); });
+
+    leg_items.append("text")
+            .attr("x", 24)
+            .attr("y", 14)
+            .text(function(d) { return d; })
+            .style("font-size", "12px");
     
     // --- Axes --- //
     var xAxis = d3.svg.axis()
@@ -169,6 +195,7 @@ var hideTooltip = function(d) {
     drawBarChart(allYearsData[0].counts);
 
 }); // end of dc.csv
+
 
 
 
